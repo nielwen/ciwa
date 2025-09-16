@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skåringsverktøy</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Skåringsverktøy</h1>
+      <div class="tabs" role="tablist" aria-label="Velg skjema">
+        <button class="tab-btn active" id="tab-ar" role="tab" aria-selected="true" aria-controls="panel-ar">CIWA-Ar (alkohol)</button>
+        <button class="tab-btn" id="tab-b" role="tab" aria-selected="false" aria-controls="panel-b">CIWA-B (benzodiazepiner)</button>
+        <button class="tab-btn" id="tab-cows" role="tab" aria-selected="false" aria-controls="panel-cows">COWS (opioider)</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="app">
+    <!-- PRINT-ARK (kun ved utskrift) -->
+    <section id="print-sheet" class="print-only">
+      <div class="ps-head">
+        <div class="ps-title" id="ps-title">CIWA-Ar</div>
+        <div class="ps-meta">
+          <div>Navn: <span id="ps-navn">–</span></div>
+          <div>Fødselsdato (tekst): <span id="ps-fodt">–</span></div>
+          <div>Dato: <span id="ps-dato">–</span></div>
+          <div>Puls: <span id="ps-puls">–</span></div>
+          <div>BT: <span id="ps-bt">–</span></div>
+        </div>
+        <div class="ps-stats">
+          <div>Total: <span id="ps-total">0</span></div>
+          <div><span id="ps-level">–</span></div>
+          <div>Besvart: <span id="ps-answered">0</span>/<span id="ps-totalq">0</span></div>
+        </div>
+      </div>
+      <div id="ps-list" class="ps-columns ps-ar"></div>
+      <div class="ps-foot" id="ps-foot">—</div>
+    </section>
+
+    <!-- Meta -->
+    <section class="card" aria-labelledby="meta-heading">
+      <h2 id="meta-heading" class="sr-only">Pasientinformasjon</h2>
+      <div class="meta-grid">
+        <div class="meta-row top">
+          <div>
+            <label for="navn">Navn</label>
+            <input type="text" id="navn" placeholder="" autocomplete="name" />
+          </div>
+          <div>
+            <label for="fodt">Fødselsdato (tekst)</label>
+            <input type="text" id="fodt" placeholder="" />
+          </div>
+          <div>
+            <label for="dato">Dato</label>
+            <input type="text" id="dato" />
+          </div>
+        </div>
+        <div class="meta-row bottom">
+          <div>
+            <label for="puls">Puls (slag/min)</label>
+            <input type="text" id="puls" inputmode="numeric" placeholder="" />
+          </div>
+          <div>
+            <label for="bt">Blodtrykk (mmHg)</label>
+            <input type="text" id="bt" placeholder="" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skjema: CIWA-Ar -->
+    <section id="panel-ar" role="tabpanel" aria-labelledby="tab-ar" class="card" style="margin-top:12px;">
+      <h2>CIWA-Ar</h2>
+      <p class="small">Clinical Institute Withdrawal Assessment for Alcohol</p>
+      <ul class="questions" id="ar-questions"></ul>
+      <div class="scorewrap" style="margin-top:12px;">
+        <div class="total-card">
+          <div class="total-top">
+            <div class="total-left">
+              <div class="total-num" id="ar-total-num">Total: 0</div>
+              <div class="badge" id="ar-badge" data-level="green">Alvorlighetsgrad: –</div>
+            </div>
+            <div class="right-tools">
+              <span id="ar-warn" class="warn-icon" title="Ubesvarte spørsmål" hidden>⚠</span>
+              <span id="ar-counts" class="counts">0/10 besvart. Mangler: –</span>
+              <button class="btn" onclick="scrollToFirstUnanswered('ar')">Gå til første ubesvarte</button>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn" onclick="resetForm('ar')">Nullstill</button>
+            <button class="btn" onclick="window.print()">Print</button>
+            <button class="btn" onclick="downloadSummary('ar')">Lagre</button>
+            <button class="btn" onclick="copySum('ar', this)">Kopier sum</button>
+            <button class="btn primary" onclick="openEmailModal('ar')">Send på e‑post</button>
+          </div>
+        </div>
+        <div class="small" id="ar-legend">Alvorlighetsgrad: <10 mild abstinens, 10–19 moderat abstinens, ≥20 alvorlig abstinens. Juster etter lokale retningslinjer.</div>
+      </div>
+    </section>
+
+    <!-- Skjema: CIWA-B -->
+    <section id="panel-b" role="tabpanel" aria-labelledby="tab-b" hidden class="card" style="margin-top:12px;">
+      <h2>CIWA-B</h2>
+      <p class="small">Clinical Institute Withdrawal Assessment for Benzodiazepines</p>
+      <ul class="questions" id="b-questions"></ul>
+      <div class="scorewrap" style="margin-top:12px;">
+        <div class="total-card">
+          <div class="total-top">
+            <div class="total-left">
+              <div class="total-num" id="b-total-num">Total: 0</div>
+              <div class="badge" id="b-badge" data-level="green">Alvorlighetsgrad: –</div>
+            </div>
+            <div class="right-tools">
+              <span id="b-warn" class="warn-icon" title="Ubesvarte spørsmål" hidden>⚠</span>
+              <span id="b-counts" class="counts">0/20 besvart. Mangler: –</span>
+              <button class="btn" onclick="scrollToFirstUnanswered('b')">Gå til første ubesvarte</button>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn" onclick="resetForm('b')">Nullstill</button>
+            <button class="btn" onclick="window.print()">Print</button>
+            <button class="btn" onclick="downloadSummary('b')">Lagre</button>
+            <button class="btn" onclick="copySum('b', this)">Kopier sum</button>
+            <button class="btn primary" onclick="openEmailModal('b')">Send på e‑post</button>
+          </div>
+        </div>
+        <div class="small" id="b-legend">Alvorlighetsgrad: 1–20 mild abstinens, 21–40 moderat abstinens, 41–60 alvorlig abstinens, 61–80 meget alvorlig abstinens.</div>
+      </div>
+    </section>
+
+    <!-- Skjema: COWS -->
+    <section id="panel-cows" role="tabpanel" aria-labelledby="tab-cows" hidden class="card" style="margin-top:12px;">
+      <h2>COWS – Clinical Opiate Withdrawal Scale</h2>
+      <p class="small">Gi kun poeng når symptom/funn ikke var til stede før opiatabstinensene debuterte og ikke mer sannsynlig skyldes annet enn abstinenser.</p>
+      <ul class="questions" id="cows-questions"></ul>
+      <div class="scorewrap" style="margin-top:12px;">
+        <div class="total-card">
+          <div class="total-top">
+            <div class="total-left">
+              <div class="total-num" id="cows-total-num">Total: 0</div>
+              <div class="badge" id="cows-badge" data-level="green">Alvorlighetsgrad: –</div>
+            </div>
+            <div class="right-tools">
+              <span id="cows-warn" class="warn-icon" title="Ubesvarte spørsmål" hidden>⚠</span>
+              <span id="cows-counts" class="counts">0/11 besvart. Mangler: –</span>
+              <button class="btn" onclick="scrollToFirstUnanswered('cows')">Gå til første ubesvarte</button>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn" onclick="resetForm('cows')">Nullstill</button>
+            <button class="btn" onclick="window.print()">Print</button>
+            <button class="btn" onclick="downloadSummary('cows')">Lagre</button>
+            <button class="btn" onclick="copySum('cows', this)">Kopier sum</button>
+            <button class="btn primary" onclick="openEmailModal('cows')">Send på e‑post</button>
+          </div>
+        </div>
+        <div class="small" id="cows-legend">Referanse: 5–12 mild, 13–24 moderat, 25–36 moderat alvorlig, ≥37 alvorlig.</div>
+      </div>
+    </section>
+
+    <!-- Modal for Send e‑post -->
+    <div id="email-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal">
+        <h3>Hvordan vil du dele?</h3>
+        <p>Velg hva som skal inkluderes i e‑posten for <span id="modal-scheme-label">CIWA-Ar</span>.</p>
+        <div class="row">
+          <button class="btn" onclick="sendEmail(currentScheme,'full'); closeEmailModal();">Oppsummering (fullt skjema)</button>
+          <button class="btn" onclick="sendEmail(currentScheme,'lite'); closeEmailModal();">Kun pasient‑ID + totalscore</button>
+          <button class="btn" onclick="closeEmailModal()">Avbryt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer (lukket som standard) -->
+    <footer style="margin:20px 0 60px;" class="small">
+      <details id="footer-details">
+        <summary>Kreditering og merknad</summary>
+        <div id="footer-ar" class="ref">Norsk versjon: Oversatt av Jan Hammer, Trude Bjørnstad, Odd Skinnemoen, Vestre Viken<br>og Jan Tore Daltveit, Svein Skjøtskift, Thomas Mildestvedt, Haukeland Universitetssjukehus. Mai 2014.<br>Se originalskjema for full ordlyd.</div>
+        <div id="footer-b" class="ref" hidden>Tilpasset fra Busto UE, Sykora K & Sellers EM (1989). Norsk oversettelse 20.12.2015 ved Anita Mlodozeniec & Øistein Kristensen.</div>
+        <div id="footer-cows" class="ref" hidden>Clinical Opiate Withdrawal Scale (COWS). Norsk tekst gjengitt fra opplastet skjema. Bruk klinisk skjønn og følg lokale prosedyrer.</div>
+        <p class="ref">Dette verktøyet er kun et hjelpemiddel og erstatter ikke klinisk vurdering. Følg alltid lokale prosedyrer og retningslinjer.</p>
+      </details>
+    </footer>
+  </main>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
