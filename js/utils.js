@@ -122,11 +122,11 @@ export function levelFor(score, scheme){
     if(score>=1)  return {lvl:'green', text:'Mild abstinens'};
     return {lvl:'green', text:'Ingen abstinens'};
     } else { // COWS
-    if(score>=37) return {lvl:'red', text:'Alvorlig'};
-    if(score>=25) return {lvl:'yellow', text:'Moderat alvorlig'};
-    if(score>=13) return {lvl:'yellow', text:'Moderat'};
-    if(score>=5)  return {lvl:'green', text:'Mild'};
-    return {lvl:'green', text:'Ingen abstinens'};
+    if(score>=37) return {lvl:'red', text:'Alvorlig abstinens'};
+    if(score>=25) return {lvl:'yellow', text:'Moderat alvorlig abstinens'};
+    if(score>=13) return {lvl:'yellow', text:'Moderat abstinens'};
+    if(score>=5)  return {lvl:'green', text:'Mild abstinens'};
+    return {lvl:'green', text:'Mild/ingen abstinens'};
     }
 }
 
@@ -177,7 +177,7 @@ export function buildSummary(scheme){
     const { values, unanswered } = getAnswers(scheme); const items = isAr? CIWA_AR : isB? CIWA_B : COWS;
     const sum = values.reduce((a,b)=> a+(b??0),0); const level = levelFor(sum, scheme);
     const name = document.getElementById('navn').value || ''; const id = document.getElementById('fodt').value || ''; const dato = document.getElementById('dato').value || ''; const puls = document.getElementById('puls').value || ''; const bt = document.getElementById('bt').value || '';
-    let text = `${isAr?'CIWA-Ar': isB?'CIWA-B':'COWS'} skåring\nDato: ${dato}\nPasient: ${name}\nFødselsdato (tekst): ${id}\nPuls: ${puls}\nBlodtrykk: ${bt}\n\n`;
+    let text = `${isAr?'CIWA-Ar': isB?'CIWA-B':'COWS'} skåring\nDato: ${dato}\nPasient: ${name}\nFødselsdato: ${id}\nPuls: ${puls}\nBlodtrykk: ${bt}\n\n`;
     text += `Total: ${sum} • Alvorlighetsgrad: ${level.text}\n`; if(unanswered.length){ text += `Mangler svar på: ${unanswered.join(', ')}\n`; } text += `\n`;
     items.forEach((q, idx)=>{ const val = values[idx]; const maxVal = q.max ?? q.options[q.options.length-1].value; text += `${idx+1}. ${q.title}: ${val===null?'-':val}/${maxVal}\n`; });
     return { text, total: sum, level: level.text, unanswered };
@@ -187,7 +187,7 @@ export function buildLite(scheme){
     const { values } = getAnswers(scheme); const sum = values.reduce((a,b)=> a+(b??0),0); const level = levelFor(sum, scheme);
     const name = document.getElementById('navn').value || ''; const id = document.getElementById('fodt').value || ''; const dato = document.getElementById('dato').value || '';
     const schemeName = scheme==='ar'?'CIWA-Ar': scheme==='b'?'CIWA-B':'COWS';
-    return { subject: `${schemeName} – ${name||'Pasient'} – total ${sum}`, body: `Dato: ${dato}\nPasient: ${name}\nFødselsdato (tekst): ${id}\nTotal: ${sum} • Alvorlighetsgrad: ${level.text}` };
+    return { subject: `${schemeName} – ${name||'Pasient'} – total ${sum}`, body: `Dato: ${dato}\nPasient: ${name}\nFødselsdato: ${id}\nTotal: ${sum} • Alvorlighetsgrad: ${level.text}` };
 }
 
 export function sendEmail(scheme, type){
@@ -220,7 +220,7 @@ export function fallbackCopy(text, btn){
     document.body.appendChild(ta);
     ta.select();
     try { document.execCommand('copy'); if(btn){ const old = btn.textContent; btn.textContent = 'Kopiert!'; setTimeout(()=> btn.textContent = old, 1600); } }
-    finally { document.body.removeChild(ta); }
+    finally { document.body.removeChild(ta); }  
 }
 
 export function renderAll(){

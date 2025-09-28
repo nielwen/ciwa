@@ -91,3 +91,9 @@
       .ps-item-text{ display:block; color:#333; font-size:10pt; margin-top:2px; }
       .ps-foot{ margin-top:8px; border-top:1px solid #000; padding-top:6px; font-size:9pt; color:#222; }
     }
+
+    #meta-details summary {
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 0.5em;
+}

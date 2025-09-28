@@ -1,6 +1,6 @@
 // CIWA-B
 export const B_LABELS = {
-    b1:{labels:['Ikke i det hele tatt','litt','moderat','mye', 'Veldig mye'], max:4},
+    b1:{labels:['Ikke i det hele tatt','Litt','Moderat','Mye', 'Veldig mye'], max:4},
     b2:{labels:['Ikke i det hele tatt','','','', 'Ute av stand til å fungere'], max:4},
     b3:{labels:['Ikke i det hele tatt','','','', 'Veldig mye'], max:4},
     b4:{labels:['Ikke i det hele tatt','','','', 'Ute av stand til å konsentrere seg'], max:4},

@@ -79,6 +79,19 @@ window.copySum = copySum;
 window.openEmailModal = openEmailModal;
 window.sendEmail = sendEmail;
 
+// Åpne/lukk meta-details basert på skjermstørrelse
+function setMetaOpenState() {
+  const details = document.getElementById('meta-details');
+  if (!details) return;
+  if (window.innerWidth > 700) {
+    details.open = true;
+  } else {
+    details.open = false;
+  }
+}
+window.addEventListener('resize', setMetaOpenState);
+window.addEventListener('DOMContentLoaded', setMetaOpenState);
+
 // Render alt når DOM er klar
 renderAll();
 });

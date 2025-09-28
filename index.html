@@ -6,6 +6,15 @@
   <title>Skåringsverktøy</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZY2Y1RX6N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0ZY2Y1RX6N');
+</script>
 <body>
   <header>
     <div class="container">
@@ -25,7 +34,7 @@
         <div class="ps-title" id="ps-title">CIWA-Ar</div>
         <div class="ps-meta">
           <div>Navn: <span id="ps-navn">–</span></div>
-          <div>Fødselsdato (tekst): <span id="ps-fodt">–</span></div>
+          <div>Fødselsdato: <span id="ps-fodt">–</span></div>
           <div>Dato: <span id="ps-dato">–</span></div>
           <div>Puls: <span id="ps-puls">–</span></div>
           <div>BT: <span id="ps-bt">–</span></div>
@@ -42,34 +51,36 @@
 
     <!-- Meta -->
     <section class="card" aria-labelledby="meta-heading">
-      <h2 id="meta-heading" class="sr-only">Pasientinformasjon</h2>
-      <div class="meta-grid">
-        <div class="meta-row top">
-          <div>
-            <label for="navn">Navn</label>
-            <input type="text" id="navn" placeholder="" autocomplete="name" />
-          </div>
-          <div>
-            <label for="fodt">Fødselsdato (tekst)</label>
-            <input type="text" id="fodt" placeholder="" />
-          </div>
-          <div>
-            <label for="dato">Dato</label>
-            <input type="text" id="dato" />
-          </div>
+  <details id="meta-details">
+    <summary>Pasientinformasjon</summary>
+    <div class="meta-grid">
+      <div class="meta-row top">
+        <div>
+          <label for="navn">Navn</label>
+          <input type="text" id="navn" placeholder="" autocomplete="name" />
         </div>
-        <div class="meta-row bottom">
-          <div>
-            <label for="puls">Puls (slag/min)</label>
-            <input type="text" id="puls" inputmode="numeric" placeholder="" />
-          </div>
-          <div>
-            <label for="bt">Blodtrykk (mmHg)</label>
-            <input type="text" id="bt" placeholder="" />
-          </div>
+        <div>
+          <label for="fodt">Fødselsdato</label>
+          <input type="text" id="fodt" placeholder="" />
+        </div>
+        <div>
+          <label for="dato">Dato</label>
+          <input type="text" id="dato" />
         </div>
       </div>
-    </section>
+      <div class="meta-row bottom">
+        <div>
+          <label for="puls">Puls (slag/min)</label>
+          <input type="text" id="puls" inputmode="numeric" placeholder="" />
+        </div>
+        <div>
+          <label for="bt">Blodtrykk (mmHg)</label>
+          <input type="text" id="bt" placeholder="" />
+        </div>
+      </div>
+    </div>
+  </details>
+</section>
 
     <!-- Skjema: CIWA-Ar -->
     <section id="panel-ar" role="tabpanel" aria-labelledby="tab-ar" class="card" style="margin-top:12px;">
@@ -133,8 +144,8 @@
 
     <!-- Skjema: COWS -->
     <section id="panel-cows" role="tabpanel" aria-labelledby="tab-cows" hidden class="card" style="margin-top:12px;">
-      <h2>COWS – Clinical Opiate Withdrawal Scale</h2>
-      <p class="small">Gi kun poeng når symptom/funn ikke var til stede før opiatabstinensene debuterte og ikke mer sannsynlig skyldes annet enn abstinenser.</p>
+      <h2>COWS</h2>
+      <p class="small">Clinical Opiate Withdrawal Scale<br>Gi kun poeng når symptom/funn ikke var til stede før opiatabstinensene debuterte og ikke mer sannsynlig skyldes annet enn abstinenser.</p>
       <ul class="questions" id="cows-questions"></ul>
       <div class="scorewrap" style="margin-top:12px;">
         <div class="total-card">
@@ -157,7 +168,7 @@
             <button class="btn primary" onclick="openEmailModal('cows')">Send på e‑post</button>
           </div>
         </div>
-        <div class="small" id="cows-legend">Referanse: 5–12 mild, 13–24 moderat, 25–36 moderat alvorlig, ≥37 alvorlig.</div>
+        <div class="small" id="cows-legend">Alvorlighetsgrad: 5–12 mild abstinens, 13–24 moderat abstinens, 25–36 moderat alvorlig abstinens, ≥37 alvorlig abstinens.</div>
       </div>
     </section>
 
@@ -180,7 +191,7 @@
         <summary>Kreditering og merknad</summary>
         <div id="footer-ar" class="ref">Norsk versjon: Oversatt av Jan Hammer, Trude Bjørnstad, Odd Skinnemoen, Vestre Viken<br>og Jan Tore Daltveit, Svein Skjøtskift, Thomas Mildestvedt, Haukeland Universitetssjukehus. Mai 2014.<br>Se originalskjema for full ordlyd.</div>
         <div id="footer-b" class="ref" hidden>Tilpasset fra Busto UE, Sykora K & Sellers EM (1989). Norsk oversettelse 20.12.2015 ved Anita Mlodozeniec & Øistein Kristensen.</div>
-        <div id="footer-cows" class="ref" hidden>Clinical Opiate Withdrawal Scale (COWS). Norsk tekst gjengitt fra opplastet skjema. Bruk klinisk skjønn og følg lokale prosedyrer.</div>
+        <div id="footer-cows" class="ref" hidden></div>
         <p class="ref">Dette verktøyet er kun et hjelpemiddel og erstatter ikke klinisk vurdering. Følg alltid lokale prosedyrer og retningslinjer.</p>
       </details>
     </footer>
