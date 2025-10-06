@@ -99,14 +99,14 @@ export const AR_LABELS = {
     ], max:4 }
 };
 export const CIWA_AR = [
-    { key:'ar1', title:'Kvalme og oppkast', help:'Spør: «Føler du deg kvalm? Har du kastet opp?» Observasjon. (0–7)', max:7 },
-    { key:'ar2', title:'Tremor', help:'Armene utstrakt med spredte fingre. Observasjon.(0–7)', max:7 },
-    { key:'ar3', title:'Svettetokter', help:'Observasjon. (0–7)', max:7 },
-    { key:'ar4', title:'Angst', help:'Spør: «Føler du deg nervøs?» Observasjon. (0–7)', max:7 },
-    { key:'ar5', title:'Uro', help:'Observasjon. (0–7)', max:7 },
-    { key:'ar6', title:'Sensibilitetsforstyrrelser (taktile)', help:'Kløe, prikking, stikking, svie, nummenhet, småkryp. Spør: "Har du noe form for kløe, prikking, stikking, brennende/sviende følelse, nummenhet eller kjenner du at småkryp kravler på eller under huden din?" Observasjon. (0–7)', max:7 },
-    { key:'ar7', title:'Hørselsforstyrrelser', help:'Lyder, ubehag/skremmende, hallusinasjoner. Spør: "Er du mer oppmerksom på lyder rundt deg? Er de ubehagelige? Skremmer de deg? Hører du noe som er urovekkende? Hører du ting som du vet ikke er der?" Observasjon. (0–7)', max:7 },
-    { key:'ar8', title:'Synsforstyrrelser', help:'Lysfølsomhet, farger, smerte, hallusinasjoner. Spør: Virker lyset sterkere enn vanlig? Oppleves farger annerledes enn vanlig? Gjør det vondt for øynene? Ser du noe som er urovekkende? Ser du ting som du vet ikke er der? Observajon. (0–7)', max:7 },
-    { key:'ar9', title:'Hodepine/trykk i hodet', help:'Ikke skår for svimmelhet/ørhet. Spør: "Føles hodet annerledes? Følges det som om det er et bånd rundt hodet ditt?"(0–7)', max:7 },
+    { key:'ar1', title:'Kvalme og oppkast', help:'Spør: «Føler du deg kvalm? Har du kastet opp?» Observasjon.', max:7 },
+    { key:'ar2', title:'Tremor', help:'Armene utstrakt med spredte fingre. Observasjon.', max:7 },
+    { key:'ar3', title:'Svettetokter', help:'Observasjon.', max:7 },
+    { key:'ar4', title:'Angst', help:'Spør: «Føler du deg nervøs?» Observasjon.', max:7 },
+    { key:'ar5', title:'Uro', help:'Observasjon.', max:7 },
+    { key:'ar6', title:'Sensibilitetsforstyrrelser (taktile)', help:'Kløe, prikking, stikking, svie, nummenhet, småkryp. Spør: "Har du noe form for kløe, prikking, stikking, brennende/sviende følelse, nummenhet eller kjenner du at småkryp kravler på eller under huden din?" Observasjon.', max:7 },
+    { key:'ar7', title:'Hørselsforstyrrelser', help:'Lyder, ubehag/skremmende, hallusinasjoner. Spør: "Er du mer oppmerksom på lyder rundt deg? Er de ubehagelige? Skremmer de deg? Hører du noe som er urovekkende? Hører du ting som du vet ikke er der?" Observasjon.', max:7 },
+    { key:'ar8', title:'Synsforstyrrelser', help:'Lysfølsomhet, farger, smerte, hallusinasjoner. Spør: Virker lyset sterkere enn vanlig? Oppleves farger annerledes enn vanlig? Gjør det vondt for øynene? Ser du noe som er urovekkende? Ser du ting som du vet ikke er der? Observasjon.', max:7 },
+    { key:'ar9', title:'Hodepine/trykk i hodet', help:'Ikke skår for svimmelhet/ørhet. Spør: "Føles hodet annerledes? Følges det som om det er et bånd rundt hodet ditt?"', max:7 },
     { key:'ar10', title:'Orientering og bevissthetsnivå', help:'Tid/sted/person, hoderegning. Spør: "Hvilken dag er det i dag? Hvor er du? Hvem er jeg?" og "Vennligst legg sammen følgende tall ..." (0–4)', max:4 }
 ];
