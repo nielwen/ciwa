@@ -528,25 +528,6 @@ export function sendEmail(scheme, type) {
 }
 
 /**
- * Last ned oppsummering som tekstfil
- * @param {string} scheme - Skjematype
- */
-export function downloadSummary(scheme) {
-  const s = buildSummary(scheme);
-  const blob = new Blob([s.text], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const name = (document.getElementById('navn').value || 'Pasient').replace(/\s+/g, '_');
-  
-  a.href = url;
-  a.download = `${scheme === 'ar' ? 'CIWA-Ar' : scheme === 'b' ? 'CIWA-B' : 'COWS'}_${name}_${new Date().toISOString().slice(0, 10)}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-/**
  * Kopier kort oppsummering til utklippstavle
  * @param {string} scheme - Skjematype
  * @param {HTMLElement} btn - Knapp-element for feedback

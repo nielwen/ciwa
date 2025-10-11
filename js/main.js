@@ -22,7 +22,6 @@ import {
   buildSummary,
   buildLite,
   sendEmail,
-  downloadSummary,
   copySum,
   fallbackCopy,
   renderAll
@@ -253,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Gjør funksjoner tilgjengelig for HTML onclick-attributter
   window.scrollToFirstUnanswered = scrollToFirstUnanswered;
   window.resetForm = resetForm;
-  window.downloadSummary = downloadSummary;
   window.copySum = copySum;
   window.openEmailModal = openEmailModal;
   window.closeEmailModal = closeEmailModal;
