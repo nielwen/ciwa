@@ -7,6 +7,7 @@
 import { AR_LABELS, CIWA_AR } from './ciwa-ar.js';
 import { B_LABELS, CIWA_B } from './ciwa-b.js';
 import { COWS_LABELS, COWS } from './cows.js';
+import { MADRS_LABELS, MADRS } from './madrs.js';
 
 // Import av hjelpefunksjoner
 import {
@@ -61,16 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabAr = document.getElementById('tab-ar');
   const tabB = document.getElementById('tab-b');
   const tabCOWS = document.getElementById('tab-cows');
+  const tabMADRS = document.getElementById('tab-madrs');
   
   // Panel-elementer
   const panelAr = document.getElementById('panel-ar');
   const panelB = document.getElementById('panel-b');
   const panelC = document.getElementById('panel-cows');
+  const panelM = document.getElementById('panel-madrs');
   
   // Footer-elementer
   const footerAr = document.getElementById('footer-ar');
   const footerB = document.getElementById('footer-b');
   const footerC = document.getElementById('footer-cows');
+  const footerM = document.getElementById('footer-madrs');
   
   // Modal-elementer
   const modal = document.getElementById('email-modal');
@@ -85,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   /**
    * Aktiver en spesifikk fane og skjul andre
-   * @param {string} which - Skjematype ('ar', 'b', 'cows')
+   * @param {string} which - Skjematype ('ar', 'b', 'cows', 'madrs')
    */
   function activateTab(which) {
     currentScheme = which;
@@ -94,24 +98,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const isAr = which === 'ar';
     const isB = which === 'b';
     const isC = which === 'cows';
+    const isM = which === 'madrs';
     
     // Oppdater fane-tilstand
-    updateTabStates(isAr, isB, isC);
+    updateTabStates(isAr, isB, isC, isM);
     
     // Vis/skjul paneler
-    togglePanelVisibility(isAr, isB, isC);
+    togglePanelVisibility(isAr, isB, isC, isM);
     
     // Vis/skjul footers
-    toggleFooterVisibility(isAr, isB, isC);
+    toggleFooterVisibility(isAr, isB, isC, isM);
     
     // Kontroller synlighet av skjema-spesifikke seksjoner
     updateBodyClasses(which);
     
     // Oppdater utskriftselementer
-    updatePrintElements(isAr, isB, isC);
+    updatePrintElements(isAr, isB, isC, isM);
     
     // Oppdater modal
-    updateModalLabel(isAr, isB, isC);
+    updateModalLabel(isAr, isB, isC, isM);
     
     // Scroll til topp og oppdater beregninger
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -121,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Oppdater tilstand for faner (active/inactive)
    */
-  function updateTabStates(isAr, isB, isC) {
+  function updateTabStates(isAr, isB, isC, isM) {
     tabAr.classList.toggle('active', isAr);
     tabAr.setAttribute('aria-selected', isAr);
     
@@ -130,24 +135,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     tabCOWS.classList.toggle('active', isC);
     tabCOWS.setAttribute('aria-selected', isC);
+    
+    tabMADRS.classList.toggle('active', isM);
+    tabMADRS.setAttribute('aria-selected', isM);
   }
   
   /**
    * Vis/skjul paneler basert på aktiv fane
    */
-  function togglePanelVisibility(isAr, isB, isC) {
+  function togglePanelVisibility(isAr, isB, isC, isM) {
     panelAr.hidden = !isAr;
     panelB.hidden = !isB;
     panelC.hidden = !isC;
+    panelM.hidden = !isM;
   }
   
   /**
    * Vis/skjul footers basert på aktiv fane
    */
-  function toggleFooterVisibility(isAr, isB, isC) {
+  function toggleFooterVisibility(isAr, isB, isC, isM) {
     footerAr.hidden = !isAr;
     footerB.hidden = !isB;
     footerC.hidden = !isC;
+    footerM.hidden = !isM;
   }
   
   /**
@@ -155,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
    */
   function updateBodyClasses(scheme) {
     // Fjern eksisterende klasser
-    document.body.className = document.body.className.replace(/active-(ar|b|cows)/g, '');
+    document.body.className = document.body.className.replace(/active-(ar|b|cows|madrs)/g, '');
     
     // Legg til ny klasse
     document.body.classList.add(`active-${scheme}`);
@@ -164,27 +174,28 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Oppdater elementer for utskrift
    */
-  function updatePrintElements(isAr, isB, isC) {
+  function updatePrintElements(isAr, isB, isC, isM) {
     const psList = document.getElementById('ps-list');
     const psTitle = document.getElementById('ps-title');
     
     if (psTitle) {
-      psTitle.textContent = isAr ? 'CIWA-Ar' : isB ? 'CIWA-B' : 'COWS';
+      psTitle.textContent = isAr ? 'CIWA-Ar' : isB ? 'CIWA-B' : isC ? 'COWS' : 'MADRS';
     }
     
     if (psList) {
       psList.classList.toggle('ps-ar', isAr);
       psList.classList.toggle('ps-b', isB);
       psList.classList.toggle('ps-cows', isC);
+      psList.classList.toggle('ps-madrs', isM);
     }
   }
   
   /**
    * Oppdater modal-label
    */
-  function updateModalLabel(isAr, isB, isC) {
+  function updateModalLabel(isAr, isB, isC, isM) {
     if (modalSchemeLabel) {
-      modalSchemeLabel.textContent = isAr ? 'CIWA-Ar' : isB ? 'CIWA-B' : 'COWS';
+      modalSchemeLabel.textContent = isAr ? 'CIWA-Ar' : isB ? 'CIWA-B' : isC ? 'COWS' : 'MADRS';
     }
   }
   
@@ -192,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (tabAr) tabAr.addEventListener('click', () => activateTab('ar'));
   if (tabB) tabB.addEventListener('click', () => activateTab('b'));
   if (tabCOWS) tabCOWS.addEventListener('click', () => activateTab('cows'));
+  if (tabMADRS) tabMADRS.addEventListener('click', () => activateTab('madrs'));
 
   // ========================================
   // E-POST MODAL
@@ -206,7 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (modalSchemeLabel) {
       modalSchemeLabel.textContent = scheme === 'ar' ? 'CIWA-Ar' : 
-                                   scheme === 'b' ? 'CIWA-B' : 'COWS';
+                                   scheme === 'b' ? 'CIWA-B' : 
+                                   scheme === 'cows' ? 'COWS' : 'MADRS';
     }
     
     if (modal) {

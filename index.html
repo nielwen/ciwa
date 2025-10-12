@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-  <!-- Meta tags -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
-  <!-- Tittel og favicon -->
   <title>Skåringsverktøy</title>
   <link rel="icon" type="image/x-icon" href="favicon.png">
-  
-  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/styles.css">
-  
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZY2Y1RX6N"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -23,7 +16,6 @@
 </head>
 
 <body>
-  <!-- HEADER MED NAVIGASJON -->
   <header>
     <div class="container">
       <h1>Skåringsverktøy</h1>
@@ -36,6 +28,9 @@
         </button>
         <button class="tab-btn" id="tab-cows" role="tab" aria-selected="false" aria-controls="panel-cows">
           COWS (opioider)
+        </button>
+        <button class="tab-btn" id="tab-madrs" role="tab" aria-selected="false" aria-controls="panel-madrs">
+          MADRS (depresjon)
         </button>
       </div>
     </div>
@@ -243,6 +238,42 @@
       </div>
     </section>
 
+    <!-- MADRS SKJEMA -->
+    <section id="panel-madrs" role="tabpanel" aria-labelledby="tab-madrs" hidden class="card" style="margin-top:12px;">
+      <h2>MADRS</h2>
+      <p class="small">Montgomery–Åsberg Depression Rating Scale</p>
+      
+      <ul class="questions" id="madrs-questions"></ul>
+      
+      <div class="scorewrap" style="margin-top:12px;">
+        <div class="total-card">
+          <div class="total-top">
+            <div class="total-left">
+              <div class="total-num" id="madrs-total-num">Total: 0</div>
+              <div class="badge" id="madrs-badge" data-level="green">Alvorlighetsgrad: –</div>
+            </div>
+            <div class="right-tools">
+              <span id="madrs-warn" class="warn-icon" title="Ubesvarte spørsmål" hidden>⚠</span>
+              <span id="madrs-counts" class="counts">0/10 besvart. Mangler spørsmål: –</span>
+              <button id="btn_madrs_ubesvart" class="btn" onclick="scrollToFirstUnanswered('madrs')">
+                Gå til første ubesvarte
+              </button>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn" onclick="resetForm('madrs')">Nullstill</button>
+            <button class="btn" onclick="window.print()">Print</button>
+            <button class="btn" onclick="copySum('madrs', this)">Kopier sum</button>
+            <button class="btn primary" onclick="openEmailModal('madrs')">Send på e‑post</button>
+          </div>
+        </div>
+        <div class="small" id="madrs-legend">
+          Alvorlighetsgrad: 0–6 ingen/minimal depresjon, 7–19 lett depresjon, 20–34 moderat depresjon, 
+          35–60 alvorlig depresjon.
+        </div>
+      </div>
+    </section>
+
     <!-- E-POST MODAL -->
     <div id="email-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="modal">
@@ -277,6 +308,12 @@
         </div>
         
         <div id="footer-cows" class="ref" hidden></div>
+        
+        <div id="footer-madrs" class="ref" hidden>
+          MADRS – Montgomery–Åsberg Depression Rating Scale. 
+          Utviklet av Montgomery & Åsberg (1979). </br>Basert på versjon fra <a href="https://www.legeforeningen.no/contentassets/478e85c05e654494896c9d78110ae963/montgommery-asberg-depression-rating-scale-madrs.pdf" 
+               target="_blank" rel="noopener">legeforeningen.no</a>
+        </div>
         
         <p class="ref">
           Dette verktøyet er kun et hjelpemiddel og erstatter ikke klinisk vurdering. 

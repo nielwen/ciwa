@@ -1,11 +1,12 @@
 // ========================================
 // UTILS.JS - Hjelpefunksjoner for skåringsverktøy
-// Håndterer rendering, beregninger og brukerinteraksjon
 // ========================================
 
+// Import av skjemadata - LEGG TIL MADRS HER
 import { AR_LABELS, CIWA_AR } from './ciwa-ar.js';
 import { B_LABELS, CIWA_B } from './ciwa-b.js';
 import { COWS_LABELS, COWS } from './cows.js';
+import { MADRS_LABELS, MADRS } from './madrs.js'; // <-- LEGG TIL DENNE LINJEN
 
 // ========================================
 // NAVIGASJON OG SCROLL-FUNKSJONER
@@ -28,10 +29,13 @@ export function scrollToNextQuestion(currentQuestionElement) {
 
 /**
  * Scroll til første ubesvarte spørsmål og marker det
- * @param {string} scheme - Skjematype ('ar', 'b', 'cows')
+ * @param {string} scheme - Skjematype ('ar', 'b', 'cows', 'madrs')
  */
 export function scrollToFirstUnanswered(scheme) {
-  const list = scheme === 'ar' ? CIWA_AR : scheme === 'b' ? CIWA_B : COWS;
+  const list = scheme === 'ar' ? CIWA_AR : 
+               scheme === 'b' ? CIWA_B : 
+               scheme === 'cows' ? COWS : 
+               scheme === 'madrs' ? MADRS : CIWA_AR; // <-- LEGG TIL MADRS
   
   for (let i = 0; i < list.length; i++) {
     if (!document.querySelector(`input[name="${list[i].key}"]:checked`)) {
@@ -48,13 +52,9 @@ export function scrollToFirstUnanswered(scheme) {
   }
 }
 
-// ========================================
-// HJELPEFUNKSJONER FOR LABELS OG DATA
-// ========================================
-
 /**
  * Hent label-tekst for en gitt verdi i et skjema
- * @param {string} scheme - Skjematype ('ar', 'b', 'cows')
+ * @param {string} scheme - Skjematype ('ar', 'b', 'cows', 'madrs')
  * @param {string} key - Spørsmålsnøkkel
  * @param {number|null} val - Verdi
  * @returns {string} Label-tekst
@@ -71,6 +71,10 @@ export function labelFor(scheme, key, val) {
     const arr = B_LABELS[key]?.labels;
     return arr && arr[idx] ? arr[idx] : '';
   }
+  if (scheme === 'madrs') { // <-- LEGG TIL MADRS STØTTE
+    const arr = MADRS_LABELS[key]?.labels;
+    return arr && arr[idx] ? arr[idx] : '';
+  }
   
   // COWS har annen struktur
   const opts = COWS_LABELS[key]?.options || [];
@@ -80,13 +84,16 @@ export function labelFor(scheme, key, val) {
 
 /**
  * Hent alle svar for et skjema
- * @param {string} prefix - Skjematype ('ar', 'b', 'cows')
+ * @param {string} prefix - Skjematype ('ar', 'b', 'cows', 'madrs')
  * @returns {Object} - { values: Array, unanswered: Array }
  */
 export function getAnswers(prefix) {
   const arr = [];
   const unanswered = [];
-  const list = prefix === 'ar' ? CIWA_AR : prefix === 'b' ? CIWA_B : COWS;
+  const list = prefix === 'ar' ? CIWA_AR : 
+               prefix === 'b' ? CIWA_B : 
+               prefix === 'cows' ? COWS : 
+               prefix === 'madrs' ? MADRS : CIWA_AR; // <-- LEGG TIL MADRS
   
   list.forEach((q, i) => {
     const sel = document.querySelector(`input[name="${q.key}"]:checked`);
@@ -120,13 +127,21 @@ export function levelFor(score, scheme) {
     if (score >= 1) return { lvl: 'green', text: 'Mild abstinens' };
     return { lvl: 'green', text: 'Ingen abstinens' };
   } 
-  else { // COWS
+  else if (scheme === 'cows') {
     if (score >= 37) return { lvl: 'red', text: 'Alvorlig abstinens' };
     if (score >= 25) return { lvl: 'yellow', text: 'Moderat alvorlig abstinens' };
     if (score >= 13) return { lvl: 'yellow', text: 'Moderat abstinens' };
     if (score >= 5) return { lvl: 'green', text: 'Mild abstinens' };
     return { lvl: 'green', text: 'Mild/ingen abstinens' };
   }
+  else if (scheme === 'madrs') { // <-- LEGG TIL MADRS ALVORLIGHETSGRADER
+    if (score >= 35) return { lvl: 'red', text: 'Alvorlig depresjon' };
+    if (score >= 20) return { lvl: 'yellow', text: 'Moderat depresjon' };
+    if (score >= 7) return { lvl: 'green', text: 'Lett depresjon' };
+    return { lvl: 'green', text: 'Ingen/minimal depresjon' };
+  }
+  
+  return { lvl: 'green', text: 'Ukjent' };
 }
 
 // ========================================
@@ -246,6 +261,8 @@ function handleChoiceChange(wrap, selectedLabel, input) {
  */
 export function renderQuestions(list, containerId) {
   const ul = document.getElementById(containerId);
+  if (!ul) return;
+  
   ul.innerHTML = '';
   
   list.forEach((q, idx) => {
@@ -273,9 +290,9 @@ export function renderQuestions(list, containerId) {
       scale = makeScale(q.key, q.options);
     } else {
       // Standard skala med labels
-      const labelSet = containerId === 'ar-questions' ? 
-        AR_LABELS[q.key]?.labels : 
-        B_LABELS[q.key]?.labels;
+      const labelSet = containerId === 'ar-questions' ? AR_LABELS[q.key]?.labels : 
+                      containerId === 'b-questions' ? B_LABELS[q.key]?.labels :
+                      containerId === 'madrs-questions' ? MADRS_LABELS[q.key]?.labels : null; // <-- LEGG TIL MADRS
       scale = makeScale(q.key, q.max, labelSet);
     }
     
@@ -300,6 +317,9 @@ export function computeTotals() {
   
   // COWS
   updateSchemeTotal('cows', COWS);
+  
+  // MADRS - LEGG TIL DENNE LINJEN
+  updateSchemeTotal('madrs', MADRS);
 }
 
 /**
@@ -340,7 +360,10 @@ function updateSchemeTotal(scheme, questionList) {
  * @param {string} scheme - Skjematype
  */
 export function resetForm(scheme) {
-  const list = scheme === 'ar' ? CIWA_AR : scheme === 'b' ? CIWA_B : COWS;
+  const list = scheme === 'ar' ? CIWA_AR : 
+               scheme === 'b' ? CIWA_B : 
+               scheme === 'cows' ? COWS : 
+               scheme === 'madrs' ? MADRS : CIWA_AR; // <-- LEGG TIL MADRS
   
   list.forEach(q => {
     document.querySelectorAll(`input[name="${q.key}"]`).forEach(inp => {
@@ -366,6 +389,7 @@ export function buildPrintSheet(currentscheme) {
   const isAr = currentscheme === 'ar';
   const isB = currentscheme === 'b';
   const isC = currentscheme === 'cows';
+  const isM = currentscheme === 'madrs';
   
   // Hent pasientdata
   const name = document.getElementById('navn').value || '–';
@@ -375,13 +399,13 @@ export function buildPrintSheet(currentscheme) {
   const bt = document.getElementById('bt').value || '–';
   
   const { values, unanswered } = getAnswers(currentscheme);
-  const list = isAr ? CIWA_AR : isB ? CIWA_B : COWS;
+  const list = isAr ? CIWA_AR : isB ? CIWA_B : isC ? COWS : MADRS;
   const sum = values.reduce((a, b) => a + (b ?? 0), 0);
   const level = levelFor(sum, currentscheme).text;
   const answered = list.length - unanswered.length;
   
   // Oppdater print-elementer
-  document.getElementById('ps-title').textContent = isAr ? 'CIWA-Ar' : isB ? 'CIWA-B' : 'COWS';
+  document.getElementById('ps-title').textContent = isAr ? 'CIWA-Ar' : isB ? 'CIWA-B' : isC ? 'COWS' : 'MADRS';
   document.getElementById('ps-navn').textContent = name;
   document.getElementById('ps-fodt').textContent = id;
   document.getElementById('ps-dato').textContent = dato;
@@ -430,13 +454,15 @@ export function buildPrintSheet(currentscheme) {
     foot.textContent = 'Norsk versjon: Oversatt av Jan Hammer, Trude Bjørnstad, Odd Skinnemoen, Vestre Viken og Jan Tore Daltveit, Svein Skjøtskift, Thomas Mildestvedt, Haukeland Universitetssjukehus. Mai 2014.';
   } else if (isB) {
     foot.textContent = 'Tilpasset fra Busto UE, Sykora K & Sellers EM (1989). Norsk oversettelse 20.12.2015 ved Anita Mlodozeniec & Øistein Kristensen.';
+  } else if (isM) {
+    foot.textContent = 'MADRS – Montgomery–Åsberg Depression Rating Scale. Utviklet av Montgomery & Åsberg (1979).';
   } else {
     foot.textContent = '';
   }
   
   // Sett CSS-klasser for kolonner
   const psList = document.getElementById('ps-list');
-  psList.className = 'ps-columns ' + (isAr ? 'ps-ar' : isB ? 'ps-b' : 'ps-cows');
+  psList.className = 'ps-columns ' + (isAr ? 'ps-ar' : isB ? 'ps-b' : isC ? 'ps-cows' : 'ps-madrs');
 }
 
 /**
@@ -447,8 +473,10 @@ export function buildPrintSheet(currentscheme) {
 export function buildSummary(scheme) {
   const isAr = scheme === 'ar';
   const isB = scheme === 'b';
+  const isC = scheme === 'cows';
+  const isM = scheme === 'madrs';
   const { values, unanswered } = getAnswers(scheme);
-  const items = isAr ? CIWA_AR : isB ? CIWA_B : COWS;
+  const items = isAr ? CIWA_AR : isB ? CIWA_B : isC ? COWS : MADRS;
   const sum = values.reduce((a, b) => a + (b ?? 0), 0);
   const level = levelFor(sum, scheme);
   
@@ -460,7 +488,7 @@ export function buildSummary(scheme) {
   const bt = document.getElementById('bt').value || '';
   
   // Bygg tekst
-  let text = `${isAr ? 'CIWA-Ar' : isB ? 'CIWA-B' : 'COWS'} skåring\n`;
+  let text = `${isAr ? 'CIWA-Ar' : isB ? 'CIWA-B' : isC ? 'COWS' : 'MADRS'} skåring\n`;
   text += `Dato: ${dato}\n`;
   text += `Pasient: ${name}\n`;
   text += `Fødselsdato: ${id}\n`;
@@ -496,35 +524,14 @@ export function buildLite(scheme) {
   const name = document.getElementById('navn').value || '';
   const id = document.getElementById('fodt').value || '';
   const dato = document.getElementById('dato').value || '';
-  const schemeName = scheme === 'ar' ? 'CIWA-Ar' : scheme === 'b' ? 'CIWA-B' : 'COWS';
+  const schemeName = scheme === 'ar' ? 'CIWA-Ar' : 
+                    scheme === 'b' ? 'CIWA-B' : 
+                    scheme === 'cows' ? 'COWS' : 'MADRS';
   
   return {
     subject: `${schemeName} – ${name || 'Pasient'} – total ${sum}`,
     body: `Dato: ${dato}\nPasient: ${name}\nFødselsdato: ${id}\nTotal: ${sum} • Alvorlighetsgrad: ${level.text}`
   };
-}
-
-// ========================================
-// EKSPORT-FUNKSJONER
-// ========================================
-
-/**
- * Send skjema på e-post
- * @param {string} scheme - Skjematype
- * @param {string} type - 'full' eller 'lite'
- */
-export function sendEmail(scheme, type) {
-  if (type === 'full') {
-    const s = buildSummary(scheme);
-    const subj = encodeURIComponent(`${scheme === 'ar' ? 'CIWA-Ar' : scheme === 'b' ? 'CIWA-B' : 'COWS'} – Full oppsummering`);
-    const body = encodeURIComponent(s.text);
-    window.location.href = `mailto:?subject=${subj}&body=${body}`;
-  } else {
-    const s = buildLite(scheme);
-    const subj = encodeURIComponent(s.subject);
-    const body = encodeURIComponent(s.body);
-    window.location.href = `mailto:?subject=${subj}&body=${body}`;
-  }
 }
 
 /**
@@ -537,7 +544,9 @@ export function copySum(scheme, btn) {
   const parts = values.map(v => (v === null ? '?' : String(v)));
   const sum = values.reduce((a, b) => a + (b ?? 0), 0);
   const level = levelFor(sum, scheme).text;
-  const schemeName = scheme === 'ar' ? 'CIWA-Ar' : scheme === 'b' ? 'CIWA-B' : 'COWS';
+  const schemeName = scheme === 'ar' ? 'CIWA-Ar' : 
+                    scheme === 'b' ? 'CIWA-B' : 
+                    scheme === 'cows' ? 'COWS' : 'MADRS';
   const text = `${schemeName}=${sum} (${parts.join('+')}) • ${level}`;
   
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -583,6 +592,40 @@ function showCopyFeedback(btn) {
 }
 
 // ========================================
+// E-POST FUNKSJONALITET
+// ========================================
+
+/**
+ * Send e-post med skjema-oppsummering
+ * @param {string} scheme - Skjematype
+ * @param {string} type - 'full' eller 'lite'
+ */
+export function sendEmail(scheme, type) {
+  let subject, body;
+  
+  if (type === 'lite') {
+    const lite = buildLite(scheme);
+    subject = lite.subject;
+    body = lite.body;
+  } else {
+    const summary = buildSummary(scheme);
+    const schemeName = scheme === 'ar' ? 'CIWA-Ar' : 
+                      scheme === 'b' ? 'CIWA-B' : 
+                      scheme === 'cows' ? 'COWS' : 'MADRS';
+    subject = `${schemeName} skåring`;
+    body = summary.text;
+  }
+  
+  // Opprett mailto-link
+  const encodedSubject = encodeURIComponent(subject);
+  const encodedBody = encodeURIComponent(body);
+  const mailtoLink = `mailto:?subject=${encodedSubject}&body=${encodedBody}`;
+  
+  // Åpne e-post-klient
+  window.location.href = mailtoLink;
+}
+
+// ========================================
 // HOVEDRENDER-FUNKSJON
 // ========================================
 
@@ -593,5 +636,6 @@ export function renderAll() {
   renderQuestions(CIWA_AR, 'ar-questions');
   renderQuestions(CIWA_B, 'b-questions');
   renderQuestions(COWS, 'cows-questions');
+  renderQuestions(MADRS, 'madrs-questions');
   computeTotals();
 }
