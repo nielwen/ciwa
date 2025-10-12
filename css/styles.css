@@ -1,0 +1,625 @@
+/* ========================================
+   CSS VARIABLER OG GLOBALE INNSTILLINGER
+   ======================================== */
+
+:root {
+  /* Farger */
+  --bg: #f6f7fb;           /* Bakgrunnsfarge */
+  --text: #0e1320;         /* Hovedtekstfarge */
+  --muted: #5f667a;        /* Dempet tekst */
+  --accent: #4b74ff;       /* Aksentfarge (blå) */
+  --border: #e3e6ef;       /* Kantlinjer */
+  --card: #ffffff;         /* Kortbakgrunn */
+  --chip: #f2f4f9;         /* Chip/knapp bakgrunn */
+  --shadow: 0 6px 20px rgba(14,19,32,0.06); /* Skygge */
+  
+  /* Status-farger */
+  --green: #18a058;        /* Grønn (lav risiko) */
+  --yellow: #c9a227;       /* Gul (moderat risiko) */
+  --red: #d64545;          /* Rød (høy risiko) */
+}
+
+/* Grunnleggende reset og body-styling */
+* { 
+  box-sizing: border-box; 
+}
+
+html, body { 
+  height: 100%; 
+}
+
+body { 
+  margin: 0; 
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial; 
+  background: var(--bg); 
+  color: var(--text); 
+}
+
+/* ========================================
+   LAYOUT OG CONTAINERE
+   ======================================== */
+
+.container { 
+  max-width: 980px; 
+  margin: 0 auto; 
+  padding: 16px; 
+}
+
+/* Header med sticky positioning */
+header { 
+  position: sticky; 
+  top: 0; 
+  z-index: 5; 
+  background: rgba(246,247,251,0.9); 
+  backdrop-filter: blur(8px); 
+  border-bottom: 1px solid var(--border); 
+}
+
+/* ========================================
+   TYPOGRAFI
+   ======================================== */
+
+h1 { 
+  font-size: clamp(1.25rem, 3.5vw, 2rem); 
+  margin: 4px 0; 
+}
+
+h2 { 
+  margin: 0px 0; 
+}
+
+.small { 
+  color: var(--muted); 
+  font-size: 0.9rem; 
+}
+
+/* ========================================
+   NAVIGASJON OG FANER
+   ======================================== */
+
+.tabs { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr 1fr; 
+  grid-template-rows: auto auto;
+  gap: 8px; 
+  margin: 8px 0; 
+  align-items: center;
+}
+
+.tabs .tab-btn:nth-child(4) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.tabs .external-link-btn {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.tab-btn { 
+  appearance: none; 
+  border: 1px solid var(--border); 
+  background: var(--chip); 
+  color: var(--text); 
+  padding: 10px 12px; 
+  border-radius: 12px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  width: 100%; 
+  box-shadow: var(--shadow); 
+  transition: all 0.15s ease;
+}
+
+.tab-btn:hover {
+  background: #f8f9fc;
+  border-color: #a8a8a8;
+  transform: translateY(-1px);
+}
+
+.tab-btn.active { 
+  outline: 2px solid var(--accent); 
+  background: #eef2ff; 
+}
+
+.external-link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 12px;
+  background: #f0fdf4;
+  border: 1px solid #16a34a;
+  border-radius: 12px;
+  color: #15803d;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: inherit;
+  white-space: nowrap;
+  box-shadow: var(--shadow);
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.external-link-btn:hover {
+  background: #16a34a;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   KORT OG CONTAINERE
+   ======================================== */
+
+.card { 
+  background: var(--card); 
+  border: 1px solid var(--border); 
+  border-radius: 16px; 
+  padding: 14px; 
+  box-shadow: var(--shadow); 
+}
+
+/* ========================================
+   PASIENTINFO (META) SEKSJONEN
+   ======================================== */
+
+.meta-grid { 
+  display: grid; 
+  gap: 12px; 
+  grid-template-columns: 1fr; 
+}
+
+.meta-row { 
+  display: grid; 
+  gap: 12px; 
+  grid-template-columns: 1fr; 
+}
+
+/* Responsive grid for større skjermer */
+@media (min-width: 640px) { 
+  .meta-row.top { 
+    grid-template-columns: 1fr 1fr 1fr; 
+  } 
+  .meta-row.bottom { 
+    grid-template-columns: 1fr 1fr 1fr 1fr; 
+  } 
+}
+
+#meta-details summary {
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 0.5em;
+}
+
+/* ========================================
+   SKJEMAELEMENTER
+   ======================================== */
+
+label { 
+  display: block; 
+  font-weight: 600; 
+  margin-bottom: 6px; 
+}
+
+input[type="text"], textarea { 
+  width: 100%; 
+  background: #fff; 
+  border: 1px solid var(--border); 
+  color: var(--text); 
+  padding: 10px 12px; 
+  border-radius: 10px; 
+  font-size: 16px; 
+}
+
+/* ========================================
+   SPØRSMÅL OG SVARALTERNATIVER
+   ======================================== */
+
+.questions { 
+  list-style: none; 
+  padding-left: 0; 
+  margin: 0; 
+  display: grid; 
+  gap: 12px; 
+}
+
+.q-card { 
+  background: #fff; 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  padding: 10px; 
+}
+
+.q-title { 
+  font-weight: 700; 
+  margin-bottom: 6px; 
+}
+
+.q-help { 
+  color: var(--muted); 
+  font-size: 0.95rem; 
+  margin-top: 4px; 
+}
+
+/* Svaralternativer (radio buttons) */
+.scale { 
+  display: grid; 
+  gap: 8px; 
+  margin-top: 8px; 
+}
+
+.choice { 
+  background: var(--chip); 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  padding: 10px 12px; 
+  display: flex; 
+  align-items: flex-start; 
+  gap: 12px; 
+  cursor: pointer; 
+  user-select: none; 
+  box-shadow: var(--shadow); 
+}
+
+.choice input[type="radio"] { 
+  margin-top: 4px; 
+  transform: scale(1.2); 
+}
+
+.choice .num { 
+  font-weight: 800; 
+  min-width: 1.5rem; 
+}
+
+.choice .desc { 
+  font-size: 0.95rem; 
+  color: var(--muted); 
+  line-height: 1.2; 
+}
+
+.choice.selected { 
+  outline: 2px solid var(--accent); 
+  background: #eef2ff; 
+}
+
+/* ========================================
+   SKÅRING OG RESULTATER
+   ======================================== */
+
+.scorewrap { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+.total-card { 
+  background: #fff; 
+  border: 1px solid var(--border); 
+  border-radius: 14px; 
+  padding: 14px; 
+  box-shadow: var(--shadow); 
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px; 
+  position: relative; 
+}
+
+.total-top { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 10px; 
+  align-items: center; 
+  justify-content: space-between; 
+}
+
+.total-left { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  flex-wrap: wrap; 
+}
+
+.total-num { 
+  font-size: clamp(1.2rem, 3vw, 1.6rem); 
+  font-weight: 800; 
+}
+
+/* Alvorlighetsgrad badges */
+.badge { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px; 
+  padding: 6px 10px; 
+  border-radius: 999px; 
+  border: 1px solid var(--border); 
+  background: #f8f9fc; 
+  font-weight: 700; 
+}
+
+.badge[data-level="green"] { 
+  border-color: #cfe9db; 
+  background: #f2fbf7; 
+}
+
+.badge[data-level="yellow"] { 
+  border-color: #f2e7bf; 
+  background: #fff9e6; 
+}
+
+.badge[data-level="red"] { 
+  border-color: #f1c7cd; 
+  background: #fff0f2; 
+}
+
+.right-tools { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  flex-wrap: wrap; 
+}
+
+.warn-icon { 
+  color: var(--yellow); 
+  font-weight: 900; 
+  font-size: 18px; 
+}
+
+.counts { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px; 
+  padding: 6px 10px; 
+  border-radius: 999px; 
+  border: 1px solid var(--border); 
+  background: #f8f9fc; 
+  color: var(--muted); 
+  font-weight: 700; 
+}
+
+/* ========================================
+   KNAPPER OG HANDLINGER
+   ======================================== */
+
+.actions { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 8px; 
+}
+
+.btn { 
+  appearance: none; 
+  border: 1px solid var(--border); 
+  background: #fff; 
+  color: var(--text); 
+  padding: 10px 12px; 
+  border-radius: 12px; 
+  font-weight: 700; 
+  cursor: pointer; 
+  box-shadow: var(--shadow); 
+}
+
+.btn.primary { 
+  background: #eef2ff; 
+  border-color: #cfd9ff; 
+}
+
+.btn.destructive { 
+  background: #fff0f2; 
+  border-color: #f1c7cd; 
+}
+
+/* ========================================
+   MODALER
+   ======================================== */
+
+.modal-backdrop { 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(14,19,32,0.45); 
+  display: none; 
+  align-items: center; 
+  justify-content: center; 
+  z-index: 50; 
+}
+
+.modal { 
+  background: #fff; 
+  border: 1px solid var(--border); 
+  border-radius: 16px; 
+  padding: 18px; 
+  max-width: 520px; 
+  width: 92%; 
+  box-shadow: 0 18px 50px rgba(14,19,32,0.25); 
+}
+
+.modal h3 { 
+  margin: 0 0 8px; 
+  font-size: 1.1rem; 
+}
+
+.modal p { 
+  margin: 0 0 12px; 
+  color: var(--muted); 
+}
+
+.modal .row { 
+  display: flex; 
+  gap: 8px; 
+  flex-wrap: wrap; 
+}
+
+/* ========================================
+   SAMMENLEGGBARE SEKSJONER (DETAILS)
+   ======================================== */
+
+details { 
+  background: #fff; 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  padding: 8px 10px; 
+}
+
+summary { 
+  cursor: pointer; 
+  font-weight: 700; 
+}
+
+/* ========================================
+   SYNLIGHETSKONTROLL FOR SKJEMATYPER
+   ======================================== */
+
+/* Skjul scheme-spesifikke seksjoner som standard */
+.ar-only, .b-only, .cows-only {
+  display: none;
+}
+
+/* Vis kun når riktig fane er aktiv */
+.active-ar .ar-only {
+  display: block;
+}
+
+.active-b .b-only {
+  display: block;
+}
+
+.active-cows .cows-only {
+  display: block;
+}
+
+/* ========================================
+   TILGJENGELIGHETSSTØTTE
+   ======================================== */
+
+.sr-only { 
+  position: absolute; 
+  width: 1px; 
+  height: 1px; 
+  padding: 0; 
+  margin: -1px; 
+  overflow: hidden; 
+  clip: rect(0,0,0,0); 
+  border: 0; 
+  white-space: nowrap; 
+}
+
+/* ========================================
+   UTSKRIFT
+   ======================================== */
+
+.print-only { 
+  display: none; 
+}
+
+#print-sheet { 
+  display: none; 
+}
+
+@media print {
+  @page { 
+    size: A4 portrait; 
+    margin: 10mm; 
+  }
+  
+  :root { 
+    --text: #000; 
+    --muted: #333; 
+  }
+  
+  body { 
+    background: #fff; 
+    color: #000; 
+  }
+  
+  header, .tabs, .card, footer, #ar-extra-info { 
+    display: none !important; 
+  }
+  
+  #print-sheet.print-only { 
+    display: block; 
+  }
+  
+  #print-sheet { 
+    font-family: ui-sans-serif, system-ui, -apple-system, Roboto, Arial; 
+    font-size: 11pt; 
+  }
+  
+  .ps-head { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 4px; 
+    margin-bottom: 6px; 
+    border-bottom: 1px solid #000; 
+    padding-bottom: 6px; 
+  }
+  
+  .ps-title { 
+    font-size: 14pt; 
+    font-weight: 800; 
+  }
+  
+  .ps-meta, .ps-stats { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 10px; 
+  }
+  
+  .ps-meta div, .ps-stats div { 
+    margin-right: 10px; 
+  }
+  
+  .ps-columns { 
+    column-gap: 16px; 
+  }
+  
+  .ps-columns.ps-ar { 
+    column-count: 2; 
+  }
+  
+  .ps-columns.ps-b { 
+    column-count: 3; 
+  }
+  
+  .ps-columns.ps-cows { 
+    column-count: 2; 
+  }
+  
+  .ps-item { 
+    break-inside: avoid; 
+    margin: 0 0 6px; 
+    padding: 4px 0; 
+    border-bottom: 1px dotted #999; 
+  }
+  
+  .ps-item-title { 
+    font-weight: 700; 
+    display: inline; 
+  }
+  
+  .ps-item-score { 
+    float: right; 
+    font-weight: 700; 
+  }
+  
+  .ps-item-text { 
+    display: block; 
+    color: #333; 
+    font-size: 10pt; 
+    margin-top: 2px; 
+  }
+  
+  .ps-foot { 
+    margin-top: 8px; 
+    border-top: 1px solid #000; 
+    padding-top: 6px; 
+    font-size: 9pt; 
+    color: #222; 
+  }
+}
+
+/* ========================================
+   DIVERSE
+   ======================================== */
+
+.ref { 
+  color: var(--muted); 
+  font-size: 0.9rem; 
+}

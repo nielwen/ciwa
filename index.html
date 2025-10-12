@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Skåringsverktøy</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0ZY2Y1RX6N"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-0ZY2Y1RX6N');
+  </script>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <h1>Skåringsverktøy</h1>
+      <div class="tabs" role="tablist" aria-label="Velg skjema">
+        <button class="tab-btn active" id="tab-ar" role="tab" aria-selected="true" aria-controls="panel-ar">
+          CIWA-Ar (alkohol)
+        </button>
+        <button class="tab-btn" id="tab-b" role="tab" aria-selected="false" aria-controls="panel-b">
+          CIWA-B (benzodiazepiner)
+        </button>
+        <button class="tab-btn" id="tab-cows" role="tab" aria-selected="false" aria-controls="panel-cows">
+          COWS (opioider)
+        </button>
+        <button class="tab-btn" id="tab-madrs" role="tab" aria-selected="false" aria-controls="panel-madrs">
+          MADRS
+        </button>
+        <a href="https://www.alkokalk.no" target="_blank" rel="noopener" class="external-link-btn">
+          Beregne alkoholenheter ↗
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOVEDINNHOLD -->
+  <main class="container" id="app">
+    
+    <!-- UTSKRIFTSARK (kun synlig ved print) -->
+    <section id="print-sheet" class="print-only">
+      <div class="ps-head">
+        <div class="ps-title" id="ps-title">CIWA-Ar</div>
+        <div class="ps-meta">
+          <div>Navn: <span id="ps-navn">–</span></div>
+          <div>Fødselsdato: <span id="ps-fodt">–</span></div>
+          <div>Dato: <span id="ps-dato">–</span></div>
+          <div>Puls: <span id="ps-puls">–</span></div>
+          <div>BT: <span id="ps-bt">–</span></div>
+          <div>Resp: <span id="ps-resp">–</span></div>
+          <div>SpO2: <span id="ps-spo2">–</span></div>
+        </div>
+        <div class="ps-stats">
+          <div>Total: <span id="ps-total">0</span></div>
+          <div><span id="ps-level">–</span></div>
+          <div>Besvart: <span id="ps-answered">0</span>/<span id="ps-totalq">0</span></div>
+        </div>
+      </div>
+      <div id="ps-list" class="ps-columns ps-ar"></div>
+      <div class="ps-foot" id="ps-foot">—</div>
+    </section>
+
+    <!-- PASIENTINFORMASJON -->
+    <section class="card" aria-labelledby="meta-heading">
+      <details id="meta-details">
+        <summary>Pasientinformasjon</summary>
+        <div class="meta-grid">
+          <div class="meta-row top">
+            <div>
+              <label for="navn">Navn</label>
+              <input type="text" id="navn" placeholder="" autocomplete="name" />
+            </div>
+            <div>
+              <label for="fodt">Fødselsdato</label>
+              <input type="text" id="fodt" placeholder="" />
+            </div>
+            <div>
+              <label for="dato">Dato</label>
+              <input type="text" id="dato" />
+            </div>
+          </div>
+          <div class="meta-row bottom">
+            <div>
+              <label for="puls">Puls (slag/min)</label>
+              <input type="text" id="puls" inputmode="numeric" placeholder="" />
+            </div>
+            <div>
+              <label for="bt">Blodtrykk (mmHg)</label>
+              <input type="text" id="bt" placeholder="" />
+            </div>
+            <div>
+              <label for="resp">Respirasjonsfrekvens (/min)</label>
+              <input type="text" id="resp" inputmode="numeric" placeholder="" />
+            </div>
+            <div>
+              <label for="spo2">SpO2 (%)</label>
+              <input type="text" id="spo2" inputmode="numeric" placeholder="" />
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- CIWA-AR SKJEMA -->
+    <section id="panel-ar" role="tabpanel" aria-labelledby="tab-ar" class="card" style="margin-top:12px;">
+      <h2>CIWA-Ar</h2>
+      <p class="small">Clinical Institute Withdrawal Assessment for Alcohol</p>
+      
+      <!-- Spørsmål genereres av JavaScript -->
+      <ul class="questions" id="ar-questions"></ul>
+      
+      <!-- Skåring og handlinger -->
+      <div class="scorewrap" style="margin-top:12px;">
+        <div class="total-card">
+          <div class="total-top">
+            <div class="total-left">
+              <div class="total-num" id="ar-total-num">Total: 0</div>
+              <div class="badge" id="ar-badge" data-level="green">Alvorlighetsgrad: –</div>
+            </div>
+            <div class="right-tools">
+              <span id="ar-warn" class="warn-icon" title="Ubesvarte spørsmål" hidden>⚠</span>
+              <span id="ar-counts" class="counts">0/10 besvart. Mangler spørsmål: –</span>
+              <button id="btn_ar_ubesvart" class="btn" onclick="scrollToFirstUnanswered('ar')">
+                Gå til første ubesvarte
+              </button>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn destructive" onclick="resetForm('ar')">Nullstill</button>
+            <button class="btn" onclick="window.print()">Print</button>
+            <button class="btn" onclick="copySum('ar', this)">Kopier sum</button>
+            <button class="btn" onclick="openEmailModal('ar')">Send på e‑post</button>
+          </div>
+        </div>
+        <div class="small" id="ar-legend">
+          Alvorlighetsgrad: &lt;10 mild abstinens, 10–19 moderat abstinens, ≥20 alvorlig abstinens. 
+          Juster etter lokale retningslinjer.
+        </div>
+      </div>
+    </section>
+
+    <!-- TILLEGGSINFORMASJON FOR CIWA-AR -->
+    <section id="ar-extra-info" class="ar-only" style="margin-top:12px;">
+      <details class="small">
+        <summary>Retningslinje fra Helsedirektoratet</summary>
+        <div>
+          <p><strong>Skåringsfrekvens:</strong></p>
+          <ul>
+            <li>Hvis pasienten har CIWA mindre enn 10, skåres pasienten hver 4. time</li>
+            <li>Hvis pasienten har CIWA over 10, bør skåring foretas hver time eller hver 2. time</li>
+          </ul>
+
+          <p><strong>Legemiddelbehandling ved ulike CIWA-nivåer:</strong></p>
+          <ul>
+            <li>Så lenge CIWA er under 10, behandles pasienten vanligvis uten legemidler. Behandling med valproinsyre bør tilbys hvis pasienten har milde abstinensplager, men erfaringsmessig får sterke abstinensplager.</li>
+            <li>CIWA 10–15: Diazepam-tabletter (per os) 10 mg x 4. Diazepam avsluttes (seponeres) ved CIWA-skåre under 10.</li>
+            <li>CIWA over 15: Diazepam 10 mg per os hver time inntil CIWA under 10. Deretter diazepam 10 mg x 4 i 1–2 dager. Ved manglende respons etter 50 mg diazepam gis olanzapin 5–10 mg intramuskulært eller per os. Dette gjentas hver time til maks 30 mg.</li>
+          </ul>
+          
+          <p>Oksazepam kan erstatte diazepam, spesielt hos eldre og pasienter med leversvikt.</p>
+
+          <p>
+            <strong>Les mer:</strong> 
+            <a href="https://www.helsedirektoratet.no/retningslinjer/avrusning-fra-rusmidler-og-vanedannende-legemidler/avrusning-fra-alkohol#ciwa-ar-styrt-behandling-ved-alkoholavrusning" 
+               target="_blank" rel="noopener">
+              Helsedirektoratets retningslinjer for alkoholavrusning
+            </a>
+          </p>
+        </div>
+      </details>
+    </section>
+
+    <!-- CIWA-B SKJEMA -->
+    <section id="panel-b" role="tabpanel" aria-labelledby="tab-b" hidden class="card" style="margin-top:12px;">
+      <h2>CIWA-B</h2>
+      <p class="small">Clinical Institute Withdrawal Assessment for Benzodiazepines</p>
+      
+      <ul class="questions" id="b-questions"></ul>
+      
+      <div class="scorewrap" style="margin-top:12px;">
+        <div class="total-card">
+          <div class="total-top">
+            <div class="total-left">
+              <div class="total-num" id="b-total-num">Total: 0</div>
+              <div class="badge" id="b-badge" data-level="green">Alvorlighetsgrad: –</div>
+            </div>
+            <div class="right-tools">
+              <span id="b-warn" class="warn-icon" title="Ubesvarte spørsmål" hidden>⚠</span>
+              <span id="b-counts" class="counts">0/20 besvart. Mangler spørsmål: –</span>
+              <button id="btn_b_ubesvart" class="btn" onclick="scrollToFirstUnanswered('b')">
+                Gå til første ubesvarte
+              </button>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn destructive" onclick="resetForm('b')">Nullstill</button>
+            <button class="btn" onclick="window.print()">Print</button>
+            <button class="btn" onclick="copySum('b', this)">Kopier sum</button>
+            <button class="btn" onclick="openEmailModal('b')">Send på e‑post</button>
+          </div>
+        </div>
+        <div class="small" id="b-legend">
+          Alvorlighetsgrad: 1–20 mild abstinens, 21–40 moderat abstinens, 41–60 alvorlig abstinens, 
+          61–80 meget alvorlig abstinens.
+        </div>
+      </div>
+    </section>
+
+    <!-- COWS SKJEMA -->
+    <section id="panel-cows" role="tabpanel" aria-labelledby="tab-cows" hidden class="card" style="margin-top:12px;">
+      <h2>COWS</h2>
+      <p class="small">
+        Clinical Opiate Withdrawal Scale<br>
+        Gi kun poeng når symptom/funn ikke var til stede før opiatabstinensene debuterte og 
+        ikke mer sannsynlig skyldes annet enn abstinenser.
+      </p>
+      
+      <ul class="questions" id="cows-questions"></ul>
+      
+      <div class="scorewrap" style="margin-top:12px;">
+        <div class="total-card">
+          <div class="total-top">
+            <div class="total-left">
+              <div class="total-num" id="cows-total-num">Total: 0</div>
+              <div class="badge" id="cows-badge" data-level="green">Alvorlighetsgrad: –</div>
+            </div>
+            <div class="right-tools">
+              <span id="cows-warn" class="warn-icon" title="Ubesvarte spørsmål" hidden>⚠</span>
+              <span id="cows-counts" class="counts">0/11 besvart. Mangler spørsmål: –</span>
+              <button id="btn_cows_ubesvart" class="btn" onclick="scrollToFirstUnanswered('cows')">
+                Gå til første ubesvarte
+              </button>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn destructive" onclick="resetForm('cows')">Nullstill</button>
+            <button class="btn" onclick="window.print()">Print</button>
+            <button class="btn" onclick="copySum('cows', this)">Kopier sum</button>
+            <button class="btn" onclick="openEmailModal('cows')">Send på e‑post</button>
+          </div>
+        </div>
+        <div class="small" id="cows-legend">
+          Alvorlighetsgrad: 5–12 mild abstinens, 13–24 moderat abstinens, 25–36 moderat alvorlig abstinens, 
+          ≥37 alvorlig abstinens.
+        </div>
+      </div>
+    </section>
+
+    <!-- MADRS SKJEMA -->
+    <section id="panel-madrs" role="tabpanel" aria-labelledby="tab-madrs" hidden class="card" style="margin-top:12px;">
+      <h2>MADRS</h2>
+      <p class="small">Montgomery–Åsberg Depression Rating Scale</p>
+      
+      <ul class="questions" id="madrs-questions"></ul>
+      
+      <div class="scorewrap" style="margin-top:12px;">
+        <div class="total-card">
+          <div class="total-top">
+            <div class="total-left">
+              <div class="total-num" id="madrs-total-num">Total: 0</div>
+              <div class="badge" id="madrs-badge" data-level="green">Alvorlighetsgrad: –</div>
+            </div>
+            <div class="right-tools">
+              <span id="madrs-warn" class="warn-icon" title="Ubesvarte spørsmål" hidden>⚠</span>
+              <span id="madrs-counts" class="counts">0/10 besvart. Mangler spørsmål: –</span>
+              <button id="btn_madrs_ubesvart" class="btn" onclick="scrollToFirstUnanswered('madrs')">
+                Gå til første ubesvarte
+              </button>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:6px;">
+            <button class="btn destructive" onclick="resetForm('madrs')">Nullstill</button>
+            <button class="btn" onclick="window.print()">Print</button>
+            <button class="btn" onclick="copySum('madrs', this)">Kopier sum</button>
+            <button class="btn" onclick="openEmailModal('madrs')">Send på e‑post</button>
+          </div>
+        </div>
+        <div class="small" id="madrs-legend">
+          Alvorlighetsgrad: 0–6 ingen/minimal depresjon, 7–19 lett depresjon, 20–34 moderat depresjon, 
+          35–60 alvorlig depresjon.
+        </div>
+      </div>
+    </section>
+
+    <!-- E-POST MODAL -->
+    <div id="email-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal">
+        <h3>Hvordan vil du dele?</h3>
+        <p>Velg hva som skal inkluderes i e‑posten for <span id="modal-scheme-label">CIWA-Ar</span>.</p>
+        <div class="row">
+          <button class="btn" onclick="sendEmail(currentScheme,'full'); closeEmailModal();">
+            Oppsummering (fullt skjema)
+          </button>
+          <button class="btn" onclick="sendEmail(currentScheme,'lite'); closeEmailModal();">
+            Kun pasient‑ID + totalscore
+          </button>
+          <button class="btn" onclick="closeEmailModal()">Avbryt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer style="margin:20px 0 60px;" class="small">
+      <details id="footer-details">
+        <summary>Kreditering og merknad</summary>
+        
+        <div id="footer-ar" class="ref">
+          Norsk versjon: Oversatt av Jan Hammer, Trude Bjørnstad, Odd Skinnemoen, Vestre Viken og <br>
+          Jan Tore Daltveit, Svein Skjøtskift, Thomas Mildestvedt, Haukeland Universitetssjukehus. Mai 2014.<br>
+          Se originalskjema for full ordlyd.
+        </div>
+        
+        <div id="footer-b" class="ref" hidden>
+          Tilpasset fra Busto UE, Sykora K & Sellers EM (1989). 
+          Norsk oversettelse 20.12.2015 ved Anita Mlodozeniec & Øistein Kristensen.
+        </div>
+        
+        <div id="footer-cows" class="ref" hidden></div>
+        
+        <div id="footer-madrs" class="ref" hidden>
+          MADRS – Montgomery–Åsberg Depression Rating Scale. 
+          Utviklet av Montgomery & Åsberg (1979). </br>Basert på versjon fra <a href="https://www.legeforeningen.no/contentassets/478e85c05e654494896c9d78110ae963/montgommery-asberg-depression-rating-scale-madrs.pdf" 
+               target="_blank" rel="noopener">legeforeningen.no</a>
+        </div>
+        
+        <p class="ref">
+          Dette verktøyet er kun et hjelpemiddel og erstatter ikke klinisk vurdering. 
+          Følg alltid lokale prosedyrer og retningslinjer.
+        </p>
+      </details>
+    </footer>
+    
+  </main>
+
+  <!-- JavaScript -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
