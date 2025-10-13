@@ -146,6 +146,24 @@ h2 {
   transform: translateY(-1px);
 }
 
+/* Mobile responsive for alkokalk-knappen */
+@media (max-width: 639px) {
+  .external-link-btn {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.3;
+    padding: 8px 6px;
+    font-size: 14px;
+  }
+}
+
+/* Desktop styling for alkokalk-knappen */
+@media (min-width: 640px) {
+  .external-link-btn {
+    line-height: 1.2;
+  }
+}
+
 /* ========================================
    KORT OG CONTAINERE
    ======================================== */
